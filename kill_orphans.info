@@ -1,0 +1,6 @@
+name = kill orphans
+description = kills orphans
+core = 7.x
+package = Other
+version = 7.x-1.0
+project = kill orphans

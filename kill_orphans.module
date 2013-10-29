@@ -1,0 +1,26 @@
+<?php
+
+function kill_orphans_menu() {
+  $items['kill/orphans'] = array(
+    'title' => 'Kill da orphans',
+    'type' => MENU_NORMAL_ITEM,
+    'page callback' => 'kill_orphans',
+    'access callback' => TRUE,
+  );
+  return $items;
+}
+
+function kill_orphans() {
+  //db_query to find all files not attached to a node:
+  $result = db_query("SELECT fid FROM file_managed WHERE NOT EXISTS (SELECT * FROM file_usage WHERE file_managed.fid = file_usage.fid) ");
+
+  //Delete file & database entry
+  for ($i = 1; $i <= $result->rowCount(); $i++) {
+    $record = $result->fetchObject();
+    $file = file_load($record->fid);
+    if ($file != NULL) {
+      file_delete($file);
+    }
+  }
+  return 'all orphans have been killed';
+}
